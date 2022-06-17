@@ -11,9 +11,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class FrontendController extends AbstractController
 {
-    /**
-     * @Route("/")
-     */
+    #[Route(path: '/')]
     public function homepage(SerializerInterface $serializer)
     {
         return $this->render('frontend/homepage.html.twig', [

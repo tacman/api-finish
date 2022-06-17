@@ -11,9 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/login", name="app_login", methods={"POST"})
-     */
+    #[Route(path: '/login', name: 'app_login', methods: ['POST'])]
     public function login(IriConverterInterface $iriConverter)
     {
         if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -21,15 +19,12 @@ class SecurityController extends AbstractController
                 'error' => 'Invalid login request: check that the Content-Type header is "application/json".'
             ], 400);
         }
-
         return new Response(null, 204, [
             'Location' => $iriConverter->getIriFromItem($this->getUser())
         ]);
     }
 
-    /**
-     * @Route("/logout", name="app_logout")
-     */
+    #[Route(path: '/logout', name: 'app_logout')]
     public function logout()
     {
         throw new \Exception('should not be reached');

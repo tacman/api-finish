@@ -25,7 +25,7 @@ class UserNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
     /**
      * @param User $object
      */
-    public function normalize($object, $format = null, array $context = array()): array
+    public function normalize($object, $format = null, array $context = array())
     {
         $isOwner = $this->userIsOwner($object);
         if ($isOwner) {
@@ -41,7 +41,7 @@ class UserNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
         return $data;
     }
 
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         // avoid recursion: only call once per object
         if (isset($context[self::ALREADY_CALLED])) {
