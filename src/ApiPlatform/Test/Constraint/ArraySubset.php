@@ -59,7 +59,7 @@ final class ArraySubset extends Constraint
      *
      * @return iterable|bool|null
      */
-    public function evaluate($other, string $description = '', bool $returnResult = false)
+    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
     {
         //type cast $other & $this->subset as an array to allow
         //support in standard array functions.
