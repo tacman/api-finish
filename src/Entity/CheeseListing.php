@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(itemOperations: ['get', 'put' => ['access_control' => "is_granted('EDIT', previous_object)", 'access_control_message' => 'Only the creator can edit a cheese listing'], 'delete' => ['access_control' => "is_granted('ROLE_ADMIN')"]], collectionOperations: ['get', 'post' => ['access_control' => "is_granted('ROLE_USER')"]], shortName: 'cheese', attributes: ['pagination_items_per_page' => 10, 'formats' => ['jsonld', 'json', 'html', 'jsonhal', 'csv' => ['text/csv']]])]
+#[ApiResource(itemOperations: ['get', 'put' => ['security' => "is_granted('EDIT', previous_object)", 'access_control_message' => 'Only the creator can edit a cheese listing'], 'delete' => ['security' => "is_granted('ROLE_ADMIN')"]], collectionOperations: ['get', 'post' => ['security' => "is_granted('ROLE_USER')"]], shortName: 'cheese', attributes: ['pagination_items_per_page' => 10, 'formats' => ['jsonld', 'json', 'html', 'jsonhal', 'csv' => ['text/csv']]])]
 #[ApiFilter(BooleanFilter::class, properties: ['isPublished'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'owner' => 'exact', 'owner.username' => 'partial'])]
 #[ApiFilter(RangeFilter::class, properties: ['price'])]

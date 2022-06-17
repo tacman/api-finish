@@ -15,7 +15,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(accessControl: "is_granted('ROLE_USER')", collectionOperations: ['get', 'post' => ['access_control' => "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')", 'validation_groups' => ['Default', 'create']]], itemOperations: ['get', 'put' => ['access_control' => "is_granted('ROLE_USER') and object == user"], 'delete' => ['access_control' => "is_granted('ROLE_ADMIN')"]])]
+#[ApiResource(security: "is_granted('ROLE_USER')",
+    collectionOperations: ['get', 'post' =>
+        ['security' => "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')",
+            'validation_groups' => ['Default', 'create']]],
+    itemOperations: ['get', 'put' => ['security' => "is_granted('ROLE_USER') and object == user"],
+        'delete' => ['security' => "is_granted('ROLE_ADMIN')"]])]
 #[ApiFilter(PropertyFilter::class)]
 #[UniqueEntity(fields: ['username'])]
 #[UniqueEntity(fields: ['email'])]
@@ -54,24 +59,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     #[Groups(['admin:read', 'owner:read', 'user:write'])]
     private $phoneNumber;
+
     public function __construct()
     {
         $this->cheeseListings = new ArrayCollection();
     }
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
     public function getEmail(): ?string
     {
         return $this->email;
     }
+
     public function setEmail(string $email): self
     {
         $this->email = $email;
 
         return $this;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -79,8 +89,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
+
     /**
      * @see UserInterface
      */
@@ -92,25 +103,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
         return $this;
     }
+
     /**
      * @see UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
+
     public function setPassword(string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
+
     /**
      * @see UserInterface
      */
@@ -118,6 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
+
     /**
      * @see UserInterface
      */
@@ -126,12 +142,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         $this->plainPassword = null;
     }
+
     public function setUsername(string $username): self
     {
         $this->username = $username;
 
         return $this;
     }
+
     /**
      * @return Collection|CheeseListing[]
      */
@@ -139,14 +157,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->cheeseListings;
     }
+
     #[Groups(['user:read'])]
     #[SerializedName('cheeseListings')]
-    public function getPublishedCheeseListings() : Collection
+    public function getPublishedCheeseListings(): Collection
     {
-        return $this->cheeseListings->filter(function(CheeseListing $cheeseListing) {
+        return $this->cheeseListings->filter(function (CheeseListing $cheeseListing) {
             return $cheeseListing->getIsPublished();
         });
     }
+
     public function addCheeseListing(CheeseListing $cheeseListing): self
     {
         if (!$this->cheeseListings->contains($cheeseListing)) {
@@ -156,6 +176,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     public function removeCheeseListing(CheeseListing $cheeseListing): self
     {
         if ($this->cheeseListings->contains($cheeseListing)) {
@@ -168,26 +189,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
+
     public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 
         return $this;
     }
+
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
+
     public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
+
     public function getUserIdentifier(): string
     {
         return $this->getEmail();
