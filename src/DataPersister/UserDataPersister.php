@@ -5,6 +5,7 @@ namespace App\DataPersister;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserDataPersister implements DataPersisterInterface
@@ -12,10 +13,10 @@ class UserDataPersister implements DataPersisterInterface
     private $entityManager;
     private $userPasswordEncoder;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $userPasswordEncoder)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->entityManager = $entityManager;
-        $this->userPasswordEncoder = $userPasswordEncoder;
+        $this->userPasswordEncoder = $userPasswordHasher;
     }
 
     public function supports($data): bool
@@ -30,7 +31,7 @@ class UserDataPersister implements DataPersisterInterface
     {
         if ($data->getPlainPassword()) {
             $data->setPassword(
-                $this->userPasswordEncoder->encodePassword($data, $data->getPlainPassword())
+                $this->userPasswordEncoder->hashPassword($data, $data->getPlainPassword())
             );
             $data->eraseCredentials();
         }
