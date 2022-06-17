@@ -1,7 +1,11 @@
 # API Platform Tutorial
 
-Well hi there! This repository holds the code and script
-for the [API Platform](https://symfonycasts.com/screencast/api-platform) course on SymfonyCasts.
+This repository holds the code and script
+for the [API Platform](https://symfonycasts.com/screencast/api-platform) course on SymfonyCasts.  
+
+It has been updated to work with PHP8 and Symfony >= 5.4.  It uses api-platform/core:^2.6, and uses attributes rather than annotations.
+
+At the moment, tests don't work, the wrong client is being wired into phpunit.
 
 ## Setup
 
@@ -23,10 +27,7 @@ on how you installed Composer.
 
 **Configure the .env (or .env.local) File**
 
-Open the `.env` file and make any adjustments you need - specifically
-`DATABASE_URL`. Or, if you want, you can create a `.env.local` file
-and *override* any configuration you need there (instead of changing
-`.env` directly).
+The default database is sqlite, so the ext-sqlite should be installed, or set DATABASE_URL in .env.local to use another database.
 
 **Setup the Database**
 
@@ -35,8 +36,15 @@ the database & tables!
 
 ```
 php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
+php bin/console doctrine:schema:update --force
 ```
+**Create A Test User**
+
+```angular2svg
+php bin/console doctrine:fixtures:load -n
+```
+
+creates a test user with an ADMIN_SUPER_USER role, with username *foo@example.com* and password *foo*.
 
 If you get an error that the database exists, that should
 be ok. But if you have problems, completely drop the
