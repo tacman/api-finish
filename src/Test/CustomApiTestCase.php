@@ -2,8 +2,8 @@
 
 namespace App\Test;
 
-use App\ApiPlatform\Test\ApiTestCase;
-use App\ApiPlatform\Test\Client;
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,18 +15,18 @@ class CustomApiTestCase extends ApiTestCase
         $user->setEmail($email);
         $user->setUsername(substr($email, 0, strpos($email, '@')));
 
-        $encoded = self::$container->get('security.password_encoder')
-            ->encodePassword($user, $password);
+        $encoded = static::getContainer()->get('security.password_hasher')
+            ->hashPassword($user, $password);
         $user->setPassword($encoded);
 
-        $em = self::$container->get('doctrine')->getManager();
+        $em = static::getContainer()->get('doctrine')->getManager();
         $em->persist($user);
         $em->flush();
 
         return $user;
     }
 
-    protected function logIn(Client $client, string $email, string $password)
+    protected function logIn(Client  $client, string $email, string $password)
     {
         $client->request('POST', '/login', [
             'json' => [
@@ -48,6 +48,6 @@ class CustomApiTestCase extends ApiTestCase
 
     protected function getEntityManager(): EntityManagerInterface
     {
-        return self::$container->get('doctrine')->getManager();
+        return static::getContainer()->get('doctrine')->getManager();
     }
 }
